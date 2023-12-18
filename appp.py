@@ -2,6 +2,7 @@
 from flask import Flask,request,render_template
 import numpy as np
 import pickle
+import requests
 # import sklearn
 
 # importing model
@@ -12,19 +13,27 @@ ms = pickle.load(open('minmaxscaler.pkl','rb'))
 # creating flask app
 app = Flask(__name__)
 
-@app.route('/')
-def index():
-    return render_template('index.html')
+# @app.route('/')
+# def index():
+#     return render_template('index.html')
 
 @app.route("/predict",methods=['POST'])
 def predict():
-    N = request.form['Nitrogen']
-    P = request.form['Phosporus']
-    K = request.form['Potassium']
-    temp = request.form['Temperature']
-    humidity = request.form['Humidity']
-    ph = request.form['Ph']
-    rainfall = request.form['Rainfall']
+    # N = request.form['Nitrogen']
+    # P = request.form['Phosporus']
+    # K = request.form['Potassium']
+    # temp = request.form['Temperature']
+    # humidity = request.form['Humidity']
+    # ph = request.form['Ph']
+    # rainfall = request.form['Rainfall']
+
+    N = requests.json.get('Nitrogen')
+    P = requests.json.get('Phosporus')
+    K = requests.json.get('Potassium')
+    temp = requests.json.get('Temperature')
+    humidity = requests.json.get('Humidity')
+    ph = requests.json.get('Ph')
+    rainfall = requests.json.get('Rainfall')
 
     feature_list = [N, P, K, temp, humidity, ph, rainfall]
     single_pred = np.array(feature_list).reshape(1, -1)
@@ -43,7 +52,8 @@ def predict():
         result = "{} is the best crop to be cultivated right there".format(crop)
     else:
         result = "Sorry, we could not determine the best crop to be cultivated with the provided data."
-    return render_template('index.html',result = result)
+    #return render_template('index.html',result = result)
+    return result
 
 
 
